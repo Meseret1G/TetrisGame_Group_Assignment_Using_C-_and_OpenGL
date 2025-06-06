@@ -1,0 +1,3 @@
+C:/Users/Amor/Desktop/TetrisGame/build/CMakeFiles/main.dir
+C:/Users/Amor/Desktop/TetrisGame/build/CMakeFiles/edit_cache.dir
+C:/Users/Amor/Desktop/TetrisGame/build/CMakeFiles/rebuild_cache.dir
