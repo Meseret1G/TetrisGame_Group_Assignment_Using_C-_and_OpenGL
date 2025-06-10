@@ -5,19 +5,18 @@
 #include <vector>
 #include <ctime>
 #include <cstdlib>
-#include <string>  // Required for std::string
-#include <sstream> // Required for std::stringstream
+#include <string>
+#include <sstream>
 
 const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 800;
 
-const int BOARD_WIDTH = 15; // Increase to match wider window
+const int BOARD_WIDTH = 15;
 const int BOARD_HEIGHT = 20;
 
 const float BLOCK_SIZE = (float)WINDOW_WIDTH / BOARD_WIDTH;
 int board[BOARD_HEIGHT][BOARD_WIDTH] = {0};
 
-// New global variable for total cleared lines
 int totalClearedLines = 0;
 
 const int tetrominoes[7][16] = {
