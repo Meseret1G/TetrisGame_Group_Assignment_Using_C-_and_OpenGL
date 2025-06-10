@@ -119,4 +119,6 @@ CMakeFiles/main.dir/src/main.cpp.obj: \
  C:/PROGRA~2/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++/cstdlib \
  C:/PROGRA~2/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include/stdlib.h \
  C:/PROGRA~2/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h \
- C:/PROGRA~2/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include/malloc.h
+ C:/PROGRA~2/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include/malloc.h \
+ C:/PROGRA~2/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++/sstream \
+ C:/PROGRA~2/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++/bits/sstream.tcc

@@ -5,16 +5,20 @@
 #include <vector>
 #include <ctime>
 #include <cstdlib>
+#include <string>  // Required for std::string
+#include <sstream> // Required for std::stringstream
 
-const int WINDOW_WIDTH = 400;
+const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 800;
 
-const int BOARD_WIDTH = 10;
+const int BOARD_WIDTH = 15; // Increase to match wider window
 const int BOARD_HEIGHT = 20;
 
-const float BLOCK_SIZE = 40.0f;
-
+const float BLOCK_SIZE = (float)WINDOW_WIDTH / BOARD_WIDTH;
 int board[BOARD_HEIGHT][BOARD_WIDTH] = {0};
+
+// New global variable for total cleared lines
+int totalClearedLines = 0;
 
 const int tetrominoes[7][16] = {
     // I
@@ -180,9 +184,9 @@ void drawBlock(int x, int y, float r, float g, float b)
     float xf = x * BLOCK_SIZE;
     float yf = y * BLOCK_SIZE;
 
-    float x1 = xf / WINDOW_WIDTH * 2 - 1;
+    float x1 = (float)x / BOARD_WIDTH * 2 - 1;
     float y1 = 1 - yf / WINDOW_HEIGHT * 2;
-    float x2 = (xf + BLOCK_SIZE) / WINDOW_WIDTH * 2 - 1;
+    float x2 = ((float)x + 1) / BOARD_WIDTH * 2 - 1;
     float y2 = 1 - (yf + BLOCK_SIZE) / WINDOW_HEIGHT * 2;
 
     glColor3f(r, g, b);
@@ -354,7 +358,8 @@ int main()
                 int lines = clearLines();
                 if (lines > 0)
                 {
-                    std::cout << "Cleared " << lines << " line(s)!\n";
+                    totalClearedLines += lines; // Add cleared lines to the total
+                    std::cout << "Cleared " << lines << " line(s)! Total: " << totalClearedLines << ".\n";
                 }
 
                 currentPiece.type = rand() % 7;
@@ -364,12 +369,18 @@ int main()
 
                 if (!doesPieceFit(currentPiece))
                 {
-                    std::cout << "Game Over!\n";
+                    std::cout << "Game Over! Total Lines Cleared: " << totalClearedLines << "\n";
                     break;
                 }
             }
             lastFallTime = currentTime;
         }
+
+        // --- Update window title with total cleared lines ---
+        std::stringstream ss;
+        ss << "Tetris OpenGL | Lines: " << totalClearedLines;
+        glfwSetWindowTitle(window, ss.str().c_str());
+        // --- End of window title update ---
 
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
