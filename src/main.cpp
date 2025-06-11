@@ -210,3 +210,37 @@ int main() // continuation from Person 1
  glfwTerminate();
  return 0;
 }
+
+int clearLines() 
+{ 
+    int linesCleared = 0; 
+    for (int y = 0; y < BOARD_HEIGHT; y++) 
+    { 
+        bool full = true; 
+        for (int x = 0; x < BOARD_WIDTH; x++) 
+        { 
+            if (board[y][x] == 0) 
+            { 
+                full = false; 
+                break; 
+            } 
+        } 
+        if (full) 
+        { 
+            linesCleared++; 
+ 
+            for (int row = y; row > 0; row--) 
+            { 
+                for (int col = 0; col < BOARD_WIDTH; col++) 
+                { 
+                    board[row][col] = board[row - 1][col]; 
+                } 
+            } 
+            for (int col = 0; col < BOARD_WIDTH; col++) 
+                board[0][col] = 0; 
+ 
+            y--; 
+        } 
+    } 
+    return linesCleared; 
+}
