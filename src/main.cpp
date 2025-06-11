@@ -208,21 +208,7 @@ void drawBlock(int x, int y, float r, float g, float b)
     glEnd();
 }
 
-void drawBoard()
-{
-    for (int y = 0; y < BOARD_HEIGHT; y++)
-    {
-        for (int x = 0; x < BOARD_WIDTH; x++)
-        {
-            int block = board[y][x];
-            if (block != 0)
-            {
-                float *c = colors[block];
-                drawBlock(x, y, c[0], c[1], c[2]);
-            }
-        }
-    }
-}
+
 
 void drawPiece(const Piece &p)
 {
