@@ -125,7 +125,26 @@ bool doesPieceFit(const Piece &p)
     return true;
 }
 
-
+void lockPiece(const Piece &p)
+{
+    for (int px = 0; px < 4; px++)
+    {
+        for (int py = 0; py < 4; py++)
+        {
+            int index = rotate(px, py, p.rotation);
+            int block = tetrominoes[p.type][index];
+            if (block != 0)
+            {
+                int boardX = p.x + px;
+                int boardY = p.y + py;
+                if (boardY >= 0 && boardY < BOARD_HEIGHT && boardX >= 0 && boardX < BOARD_WIDTH)
+                {
+                    board[boardY][boardX] = block;
+                }
+            }
+        }
+    }
+}
 
 int clearLines()
 {
