@@ -357,7 +357,7 @@ int main()
                 if (lines > 0)
                 {
                     totalClearedLines += lines;
-                    std::cout << "Total : " << totalClearedLines << ".\n ";
+                    std::cout << "Cleared " << lines << " line(s)! Total: " << totalClearedLines << ".\n";
                 }
 
                 currentPiece.type = rand() % 7;
