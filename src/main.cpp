@@ -146,7 +146,7 @@ void lockPiece(const Piece &p)
     }
 }
 
-
+int clearLines()
 {
     int linesCleared = 0;
     for (int y = 0; y < BOARD_HEIGHT; y++)
