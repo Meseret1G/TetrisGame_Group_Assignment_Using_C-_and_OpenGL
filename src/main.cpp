@@ -19,7 +19,7 @@ int board[BOARD_HEIGHT][BOARD_WIDTH] = {0};
 int totalClearedLines = 0;
 
 //the available shapes 
-const int tetrominoes[7][16] = {
+
     // I
     {
         0, 0, 0, 0,
