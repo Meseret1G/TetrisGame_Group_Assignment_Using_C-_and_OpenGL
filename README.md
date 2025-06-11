@@ -6,8 +6,7 @@ The game was coded using just C++, OpenGL (with GLFW and GLAD), and 2D rendering
 ----------------------------------------
 Demonstration Video 
 ====
-https://github.com/Meseret1G/TetrisGame-Using-C-And-OpenGL/raw/refs/heads/main/CGLAB.mp4
-
+https://github.com/Meseret1G/TetrisGame_Group_Assignment_Using_C-_and_OpenGL/blob/main/CGLAB.mp4
 ---------------------------------------
 Tetromino Pieces Explained
 ==========================
