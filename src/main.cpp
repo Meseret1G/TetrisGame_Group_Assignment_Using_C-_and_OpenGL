@@ -201,9 +201,8 @@ int clearLines()
     return linesCleared; 
 }
 
-int main() // continuation from Person 1
+int main() 
 {
- // Initialization code from Person 1 ...
  spawnPiece();
  float lastTime = (float)glfwGetTime();
  while (!glfwWindowShouldClose(window) && !gameOver)
