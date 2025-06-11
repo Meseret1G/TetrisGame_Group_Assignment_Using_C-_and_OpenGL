@@ -56,9 +56,9 @@ float colors[8][4] = {
 
 struct Piece
 {
-    int x, y;
-    int type;
-    int rotation;
+    int x, y; //position on the board
+    int type; //Tetromino type(0-6)
+    int rotation; // current rotation state (0-3)
 };
 
 Piece currentPiece;
