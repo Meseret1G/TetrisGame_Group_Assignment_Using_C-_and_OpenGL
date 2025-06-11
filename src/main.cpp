@@ -63,6 +63,21 @@ struct Piece
 
 Piece currentPiece;
 
+int rotate(int x, int y, int rotation)
+{
+    switch (rotation % 4)
+    {
+    case 0:
+        return y * 4 + x; // 0 degrees
+    case 1:
+        return 12 + y - (x * 4); // 90 degrees
+    case 2:
+        return 15 - (y * 4) - x; // 180 degrees
+    case 3:
+        return 3 - y + (x * 4); // 270 degrees
+    }
+    return 0;
+}
 int clearLines()
 {
     int linesCleared = 0;
