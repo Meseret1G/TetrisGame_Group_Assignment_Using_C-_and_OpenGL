@@ -73,6 +73,7 @@ void drawBlock(int x, int y, float r, float g, float b)
     float x2 = ((float)x + 1) / BOARD_WIDTH * 2 - 1;
     float y2 = 1 - (yf + BLOCK_SIZE) / WINDOW_HEIGHT * 2;
 
+    // draw the block with the specified color
     glColor3f(r, g, b);
     glBegin(GL_QUADS);
     glVertex2f(x1, y1);
@@ -81,6 +82,7 @@ void drawBlock(int x, int y, float r, float g, float b)
     glVertex2f(x1, y2);
     glEnd();
 
+    //draw a border around the block for better visibility
     glColor3f(0, 0, 0);
     glLineWidth(2.0f);
     glBegin(GL_LINE_LOOP);
@@ -233,7 +235,7 @@ int main()
  }
  }
  }
- glClearColor(0, 0, 0, 1);
+ glClearColor(0, 0, 0, 1); //set the background color to black
  glClear(GL_COLOR_BUFFER_BIT);
  drawBoard();
  drawPiece(currentPiece);
