@@ -78,6 +78,31 @@ int rotate(int x, int y, int rotation)
     }
     return 0;
 }
+
+bool doesPieceFit(const Piece &p)
+{
+    for (int px = 0; px < 4; px++)
+    {
+        for (int py = 0; py < 4; py++)
+        {
+            int index = rotate(px, py, p.rotation);
+            int block = tetrominoes[p.type][index];
+            if (block != 0)
+            {
+                int boardX = p.x + px;
+                int boardY = p.y + py;
+
+                if (boardX < 0 || boardX >= BOARD_WIDTH || boardY < 0 || boardY >= BOARD_HEIGHT)
+                    return false;
+
+                if (board[boardY][boardX] != 0)
+                    return false;
+            }
+        }
+    }
+    return true;
+}
+
 int clearLines()
 {
     int linesCleared = 0;
