@@ -124,3 +124,89 @@ void drawPiece(const Piece& p)
     }
 }
 
+
+void spawnPiece()
+{
+ currentPiece.type = rand() % 7;
+ currentPiece.x = BOARD_WIDTH / 2 - 2;
+ currentPiece.y = 0;
+ currentPiece.rotation = 0;
+}
+bool gameOver = false;
+float fallSpeed = 0.5f;
+float fallTimer = 0;
+void processInput(GLFWwindow *window)
+{
+ if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+ {
+ Piece test = currentPiece;
+ test.x--;
+ if (doesPieceFit(test))
+ currentPiece = test;
+ }
+ if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+ {
+ Piece test = currentPiece;
+ test.x++;
+ if (doesPieceFit(test))
+ currentPiece = test;
+ }
+ if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+ {
+ Piece test = currentPiece;
+ test.rotation = (test.rotation + 1) % 4;
+ if (doesPieceFit(test))
+ currentPiece = test;
+ }
+ if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+ {
+ Piece test = currentPiece;
+ test.y++;
+ if (doesPieceFit(test))
+ currentPiece = test;
+ }
+}
+int main() // continuation from Person 1
+{
+ // Initialization code from Person 1 ...
+ spawnPiece();
+ float lastTime = (float)glfwGetTime();
+ while (!glfwWindowShouldClose(window) && !gameOver)
+ {
+ float currentTime = (float)glfwGetTime();
+ float deltaTime = currentTime - lastTime;
+ lastTime = currentTime;
+ fallTimer += deltaTime;
+ processInput(window);
+ if (fallTimer >= fallSpeed)
+ {
+ fallTimer = 0;
+ Piece test = currentPiece;
+ test.y++;
+ if (doesPieceFit(test))
+ {
+ currentPiece = test;
+ }
+ else
+ {
+ lockPiece(currentPiece);
+ int cleared = clearLines();
+ totalClearedLines += cleared;
+ spawnPiece();
+ if (!doesPieceFit(currentPiece))
+ {
+ gameOver = true;
+ }
+ }
+ }
+ glClearColor(0, 0, 0, 1);
+ glClear(GL_COLOR_BUFFER_BIT);
+ drawBoard();
+ drawPiece(currentPiece);
+ glfwSwapBuffers(window);
+ glfwPollEvents();
+ }
+ glfwDestroyWindow(window);
+ glfwTerminate();
+ return 0;
+}
