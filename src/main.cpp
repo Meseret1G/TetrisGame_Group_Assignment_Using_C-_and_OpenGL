@@ -18,6 +18,7 @@ int board[BOARD_HEIGHT][BOARD_WIDTH] = {0};
 
 int totalClearedLines = 0;
 
+//the available shapes 
 const int tetrominoes[7][16] = {
     // I
     {
@@ -73,6 +74,7 @@ float colors[8][4] = {
     {1.0f, 0.5f, 0.0f, 1}  // 7 = Orange (L)
 };
 
+// the properties of each piece
 struct Piece
 {
     int x, y;
@@ -98,6 +100,7 @@ int rotate(int x, int y, int rotation)
     return 0;
 }
 
+//checkes if the piece fits
 bool doesPieceFit(const Piece &p)
 {
     for (int px = 0; px < 4; px++)
