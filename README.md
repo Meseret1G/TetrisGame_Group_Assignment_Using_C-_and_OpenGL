@@ -4,7 +4,7 @@ Tetris Game using C++ and OpenGL
 The game was coded using just C++, OpenGL (with GLFW and GLAD), and 2D rendering, making it a simple classic Tetris version. It presents the workings of a game, handles user controls, and uses OpenGL to show things in real time.
 
 ----------------------------------------
-Demo
+Demonstration Video 
 ====
 https://github.com/Meseret1G/TetrisGame-Using-C-And-OpenGL/raw/refs/heads/main/CGLAB.mp4
 
