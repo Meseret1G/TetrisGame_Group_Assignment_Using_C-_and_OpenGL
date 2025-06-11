@@ -1,3 +1,22 @@
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+#include <string>
+#include <sstream>
+
+const int WINDOW_WIDTH = 600;
+const int WINDOW_HEIGHT = 800;
+
+const int BOARD_WIDTH = 15;
+const int BOARD_HEIGHT = 20;
+
+const float BLOCK_SIZE = (float)WINDOW_WIDTH / BOARD_WIDTH;
+int board[BOARD_HEIGHT][BOARD_WIDTH] = {0};
+
+int totalClearedLines = 0;
 
 const int tetrominoes[7][16] = {
     // I
@@ -56,9 +75,9 @@ float colors[8][4] = {
 
 struct Piece
 {
-    int x, y; //position on the board
-    int type; //Tetromino type(0-6)
-    int rotation; // current rotation state (0-3)
+    int x, y;
+    int type;
+    int rotation;
 };
 
 Piece currentPiece;
@@ -101,6 +120,27 @@ bool doesPieceFit(const Piece &p)
         }
     }
     return true;
+}
+
+void lockPiece(const Piece &p)
+{
+    for (int px = 0; px < 4; px++)
+    {
+        for (int py = 0; py < 4; py++)
+        {
+            int index = rotate(px, py, p.rotation);
+            int block = tetrominoes[p.type][index];
+            if (block != 0)
+            {
+                int boardX = p.x + px;
+                int boardY = p.y + py;
+                if (boardY >= 0 && boardY < BOARD_HEIGHT && boardX >= 0 && boardX < BOARD_WIDTH)
+                {
+                    board[boardY][boardX] = block;
+                }
+            }
+        }
+    }
 }
 
 int clearLines()
@@ -147,7 +187,6 @@ void drawBlock(int x, int y, float r, float g, float b)
     float x2 = ((float)x + 1) / BOARD_WIDTH * 2 - 1;
     float y2 = 1 - (yf + BLOCK_SIZE) / WINDOW_HEIGHT * 2;
 
-    // draw the block with the specified color
     glColor3f(r, g, b);
     glBegin(GL_QUADS);
     glVertex2f(x1, y1);
@@ -156,7 +195,6 @@ void drawBlock(int x, int y, float r, float g, float b)
     glVertex2f(x1, y2);
     glEnd();
 
-    //draw a border around the block for better visibility
     glColor3f(0, 0, 0);
     glLineWidth(2.0f);
     glBegin(GL_LINE_LOOP);
@@ -176,14 +214,14 @@ void drawBoard()
             int block = board[y][x];
             if (block != 0)
             {
-                float* c = colors[block];
+                float *c = colors[block];
                 drawBlock(x, y, c[0], c[1], c[2]);
             }
         }
     }
 }
 
-void drawPiece(const Piece& p)
+void drawPiece(const Piece &p)
 {
     for (int px = 0; px < 4; px++)
     {
@@ -193,54 +231,11 @@ void drawPiece(const Piece& p)
             int block = tetrominoes[p.type][index];
             if (block != 0)
             {
-                float* c = colors[block];
+                float *c = colors[block];
                 drawBlock(p.x + px, p.y + py, c[0], c[1], c[2]);
             }
         }
     }
-}
-
-
-void spawnPiece()
-{
- currentPiece.type = rand() % 7;
- currentPiece.x = BOARD_WIDTH / 2 - 2;
- currentPiece.y = 0;
- currentPiece.rotation = 0;
-}
-bool gameOver = false;
-float fallSpeed = 0.5f;
-float fallTimer = 0;
-void processInput(GLFWwindow *window)
-{
- if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
- {
- Piece test = currentPiece;
- test.x--;
- if (doesPieceFit(test))
- currentPiece = test;
- }
- if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
- {
- Piece test = currentPiece;
- test.x++;
- if (doesPieceFit(test))
- currentPiece = test;
- }
- if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
- {
- Piece test = currentPiece;
- test.rotation = (test.rotation + 1) % 4;
- if (doesPieceFit(test))
- currentPiece = test;
- }
- if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
- {
- Piece test = currentPiece;
- test.y++;
- if (doesPieceFit(test))
- currentPiece = test;
- }
 }
 
 void error_callback(int error, const char *description)
@@ -248,48 +243,151 @@ void error_callback(int error, const char *description)
     std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
 }
 
-int main() 
+int main()
 {
- spawnPiece();
- float lastTime = (float)glfwGetTime();
- while (!glfwWindowShouldClose(window) && !gameOver)
- {
- float currentTime = (float)glfwGetTime();
- float deltaTime = currentTime - lastTime;
- lastTime = currentTime;
- fallTimer += deltaTime;
- processInput(window);
- if (fallTimer >= fallSpeed)
- {
- fallTimer = 0;
- Piece test = currentPiece;
- test.y++;
- if (doesPieceFit(test))
- {
- currentPiece = test;
- }
- else
- {
- lockPiece(currentPiece);
- int cleared = clearLines();
- totalClearedLines += cleared;
- spawnPiece();
- if (!doesPieceFit(currentPiece))
- {
- gameOver = true;
- }
- }
- }
- glClearColor(0, 0, 0, 1); //set the background color to black
- glClear(GL_COLOR_BUFFER_BIT);
- drawBoard();
- drawPiece(currentPiece);
- glfwSwapBuffers(window);
- glfwPollEvents();
- }
- glfwDestroyWindow(window);
- glfwTerminate();
- return 0;
+    srand((unsigned)time(NULL));
+
+    glfwSetErrorCallback(error_callback);
+    if (!glfwInit())
+    {
+        std::cerr << "Failed to init GLFW\n";
+        return -1;
+    }
+
+    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Tetris OpenGL", NULL, NULL);
+    if (!window)
+    {
+        std::cerr << "Failed to create GLFW window\n";
+        glfwTerminate();
+        return -1;
+    }
+
+    glfwMakeContextCurrent(window);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cerr << "Failed to initialize GLAD\n";
+        return -1;
+    }
+
+    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    currentPiece.type = rand() % 7;
+    currentPiece.x = BOARD_WIDTH / 2 - 2;
+    currentPiece.y = 0;
+    currentPiece.rotation = 0;
+
+    double lastFallTime = glfwGetTime();
+    double fallInterval = 0.5;
+
+    bool keyLeftPressed = false;
+    bool keyRightPressed = false;
+    bool keyDownPressed = false;
+    bool keyRotatePressed = false;
+
+    while (!glfwWindowShouldClose(window))
+    {
+        glfwPollEvents();
+
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && !keyLeftPressed)
+        {
+            Piece moved = currentPiece;
+            moved.x -= 1;
+            if (doesPieceFit(moved))
+                currentPiece = moved;
+            keyLeftPressed = true;
+        }
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_RELEASE)
+        {
+            keyLeftPressed = false;
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && !keyRightPressed)
+        {
+            Piece moved = currentPiece;
+            moved.x += 1;
+            if (doesPieceFit(moved))
+                currentPiece = moved;
+            keyRightPressed = true;
+        }
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_RELEASE)
+        {
+            keyRightPressed = false;
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && !keyDownPressed)
+        {
+            Piece moved = currentPiece;
+            moved.y += 1;
+            if (doesPieceFit(moved))
+                currentPiece = moved;
+            keyDownPressed = true;
+        }
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_RELEASE)
+        {
+            keyDownPressed = false;
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && !keyRotatePressed)
+        {
+            Piece rotated = currentPiece;
+            rotated.rotation = (rotated.rotation + 1) % 4;
+            if (doesPieceFit(rotated))
+                currentPiece = rotated;
+            keyRotatePressed = true;
+        }
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_RELEASE)
+        {
+            keyRotatePressed = false;
+        }
+
+        double currentTime = glfwGetTime();
+        if (currentTime - lastFallTime > fallInterval)
+        {
+            Piece moved = currentPiece;
+            moved.y += 1;
+            if (doesPieceFit(moved))
+            {
+                currentPiece = moved;
+            }
+            else
+            {
+                lockPiece(currentPiece);
+                int lines = clearLines();
+                if (lines > 0)
+                {
+                    totalClearedLines += lines;
+                    std::cout << "Total : " << totalClearedLines << ".\n ";
+                }
+
+                currentPiece.type = rand() % 7;
+                currentPiece.x = BOARD_WIDTH / 2 - 2;
+                currentPiece.y = 0;
+                currentPiece.rotation = 0;
+
+                if (!doesPieceFit(currentPiece))
+                {
+                    std::cout << "Game Over! Total Lines Cleared: " << totalClearedLines << "\n";
+                    break;
+                }
+            }
+            lastFallTime = currentTime;
+        }
+
+        std::stringstream ss;
+        ss << "Tetris OpenGL | Lines: " << totalClearedLines;
+        glfwSetWindowTitle(window, ss.str().c_str());
+
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        drawBoard();
+        drawPiece(currentPiece);
+
+        glfwSwapBuffers(window);
+    }
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    return 0;
 }
-
-
